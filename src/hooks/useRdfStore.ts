@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { parseRdfTurtle } from '../services/rdfParser';
 import { convertRdfToGraph } from '../services/graphConverter';
-import { useGraph } from '../context/GraphContext';
+import { useGraphData } from '../context/GraphDataContext';
 
 export function useRdfStore() {
-  const { setGraphData } = useGraph();
+  const { setGraphData } = useGraphData();
 
   const loadRdfFromString = useCallback((turtleContent: string, baseUri?: string) => {
     const parsed = parseRdfTurtle(turtleContent, baseUri);

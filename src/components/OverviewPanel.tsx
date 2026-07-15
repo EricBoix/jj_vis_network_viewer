@@ -1,7 +1,9 @@
-import { useGraph } from '../context/GraphContext';
+import { useGraphData } from '../context/GraphDataContext';
+import { useViewSettings } from '../context/ViewSettingsContext';
 
 export function OverviewPanel() {
-  const { nodes, edges, visibleNodeTypes, visibleEdgeTypes, toggleNodeType, toggleEdgeType } = useGraph();
+  const { nodes, edges } = useGraphData();
+  const { visibleNodeTypes, visibleEdgeTypes, toggleNodeType, toggleEdgeType } = useViewSettings();
 
   const allNodeTypes = [...new Set(nodes.flatMap(n => n.types))].sort();
   const allEdgeTypes = [...new Set(edges.map(e => e.label))].sort();

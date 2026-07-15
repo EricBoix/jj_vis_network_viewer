@@ -9,6 +9,7 @@ interface UseVisNetworkProps {
   nodes: GraphNode[];
   edges: GraphEdge[];
   nodeLabelMode: NodeLabelMode;
+  physicsEnabled: boolean;
   onSelect: (selection: Selection) => void;
 }
 
@@ -68,7 +69,7 @@ const networkOptions: Options = {
   },
 };
 
-export function useVisNetwork({ nodes, edges, nodeLabelMode, onSelect }: UseVisNetworkProps) {
+export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, onSelect }: UseVisNetworkProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const networkRef = useRef<Network | null>(null);
   const nodesDataSetRef = useRef<DataSet<{ id: string; label: string }>>(new DataSet());
@@ -153,6 +154,11 @@ export function useVisNetwork({ nodes, edges, nodeLabelMode, onSelect }: UseVisN
     const updates = edges.map(e => ({ id: e.id, from: e.from, to: e.to, label: e.label }));
     dataSet.update(updates);
   }, [edges]);
+
+  // Sync physics
+  useEffect(() => {
+    networkRef.current?.setOptions({ physics: { enabled: physicsEnabled } });
+  }, [physicsEnabled]);
 
   const fit = useCallback(() => {
     networkRef.current?.fit();

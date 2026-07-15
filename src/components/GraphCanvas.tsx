@@ -1,8 +1,10 @@
-import { useGraph } from '../context/GraphContext';
+import { useGraphData } from '../context/GraphDataContext';
+import { useViewSettings } from '../context/ViewSettingsContext';
 import { useVisNetwork } from '../hooks/useVisNetwork';
 
 export function GraphCanvas() {
-  const { nodes, edges, nodeLabelMode, visibleNodeTypes, visibleEdgeTypes, setSelection } = useGraph();
+  const { nodes, edges, setSelection } = useGraphData();
+  const { nodeLabelMode, physicsEnabled, visibleNodeTypes, visibleEdgeTypes } = useViewSettings();
 
   const visibleNodes = nodes.filter(n =>
     n.types.length === 0 || n.types.some(t => visibleNodeTypes.has(t))
@@ -18,6 +20,7 @@ export function GraphCanvas() {
     nodes: visibleNodes,
     edges: visibleEdges,
     nodeLabelMode,
+    physicsEnabled,
     onSelect: setSelection,
   });
 

@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useGraph } from '../context/GraphContext';
+import { useGraphData } from '../context/GraphDataContext';
 
 export function EditPanel() {
-  const { selection, getSelectedNode, getSelectedEdge, updateNode, updateEdge } = useGraph();
+  const { selection, selectedNode, selectedEdge, updateNode, updateEdge } = useGraphData();
   const [editLabel, setEditLabel] = useState('');
-
-  const selectedNode = getSelectedNode();
-  const selectedEdge = getSelectedEdge();
 
   useEffect(() => {
     if (selection.type === 'node' && selectedNode) {
@@ -59,7 +56,6 @@ const styles: Record<string, React.CSSProperties> = {
   panel: {
     padding: '16px',
     backgroundColor: '#fff',
-    borderLeft: '1px solid #ccc',
     height: '100%',
   },
   placeholder: {

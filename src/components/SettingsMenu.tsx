@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useGraph } from '../context/GraphContext';
+import { useViewSettings } from '../context/ViewSettingsContext';
 import { NodeLabelMode } from '../types/graph.types';
 
 const GearIcon = () => (
@@ -14,7 +14,7 @@ const SEGMENTS: { value: NodeLabelMode; label: string }[] = [
 ];
 
 export function SettingsMenu() {
-  const { nodeLabelMode, setNodeLabelMode } = useGraph();
+  const { nodeLabelMode, setNodeLabelMode } = useViewSettings();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 

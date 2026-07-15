@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { GraphProvider } from './context/GraphContext';
 import { GraphCanvas } from './components/GraphCanvas';
 import { LoadRdfButton } from './components/LoadRdfButton';
+import { PhysicsToggle } from './components/PhysicsToggle';
 import { SettingsMenu } from './components/SettingsMenu';
 import { Sidebar } from './components/Sidebar';
 import { ResizeHandle } from './components/ResizeHandle';
@@ -48,6 +49,7 @@ function AppContent() {
         <h1 style={styles.title}>Knowledge Graph Visualization</h1>
         <div style={styles.toolbar}>
           <LoadRdfButton />
+          <PhysicsToggle />
           <SettingsMenu />
         </div>
       </header>

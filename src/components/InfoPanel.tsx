@@ -1,7 +1,7 @@
-import { useGraph } from '../context/GraphContext';
+import { useGraphData } from '../context/GraphDataContext';
 
 export function InfoPanel() {
-  const { selection, getSelectedNode, getSelectedEdge } = useGraph();
+  const { selection, selectedNode, selectedEdge } = useGraphData();
 
   if (!selection.type) {
     return (
@@ -12,27 +12,25 @@ export function InfoPanel() {
   }
 
   if (selection.type === 'node') {
-    const node = getSelectedNode();
-    if (!node) return null;
-
+    if (!selectedNode) return null;
     return (
       <div style={styles.panel}>
-        <h3 style={styles.title}>Node: {node.label}</h3>
-        {node.types.length > 0 && (
+        <h3 style={styles.title}>Node: {selectedNode.label}</h3>
+        {selectedNode.types.length > 0 && (
           <div style={styles.section}>
             <strong>Type:</strong>
-            <span style={styles.value}>{node.types.join(', ')}</span>
+            <span style={styles.value}>{selectedNode.types.join(', ')}</span>
           </div>
         )}
         <div style={styles.section}>
           <strong>URI:</strong>
-          <p style={styles.uri}>{node.uri}</p>
+          <p style={styles.uri}>{selectedNode.uri}</p>
         </div>
-        {Object.keys(node.metadata).length > 0 && (
+        {Object.keys(selectedNode.metadata).length > 0 && (
           <div style={styles.section}>
             <strong>Properties:</strong>
             <ul style={styles.list}>
-              {Object.entries(node.metadata).map(([key, values]) => (
+              {Object.entries(selectedNode.metadata).map(([key, values]) => (
                 <li key={key}>
                   <span style={styles.key}>{key}:</span>
                   <span style={styles.value}>{values.join(', ')}</span>
@@ -46,23 +44,21 @@ export function InfoPanel() {
   }
 
   if (selection.type === 'edge') {
-    const edge = getSelectedEdge();
-    if (!edge) return null;
-
+    if (!selectedEdge) return null;
     return (
       <div style={styles.panel}>
-        <h3 style={styles.title}>Edge: {edge.label}</h3>
+        <h3 style={styles.title}>Edge: {selectedEdge.label}</h3>
         <div style={styles.section}>
           <strong>Predicate URI:</strong>
-          <p style={styles.uri}>{edge.predicateUri}</p>
+          <p style={styles.uri}>{selectedEdge.predicateUri}</p>
         </div>
         <div style={styles.section}>
           <strong>From:</strong>
-          <p style={styles.uri}>{edge.from}</p>
+          <p style={styles.uri}>{selectedEdge.from}</p>
         </div>
         <div style={styles.section}>
           <strong>To:</strong>
-          <p style={styles.uri}>{edge.to}</p>
+          <p style={styles.uri}>{selectedEdge.to}</p>
         </div>
       </div>
     );
@@ -75,7 +71,6 @@ const styles: Record<string, React.CSSProperties> = {
   panel: {
     padding: '16px',
     backgroundColor: '#fff',
-    borderLeft: '1px solid #ccc',
     height: '100%',
     overflowY: 'auto',
   },

@@ -2,6 +2,7 @@ export interface GraphNode {
   id: string;
   label: string;
   uri: string;
+  types: string[];
   metadata: Record<string, string[]>;
 }
 

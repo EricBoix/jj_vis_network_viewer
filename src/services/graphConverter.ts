@@ -2,6 +2,7 @@ import { GraphNode, GraphEdge, GraphData } from '../types/graph.types';
 import { ParsedRdf, getLocalName } from './rdfParser';
 
 const RDFS_LABEL = 'http://www.w3.org/2000/01/rdf-schema#label';
+const RDF_TYPE   = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 
 export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
   const { triples, subjects } = parsedRdf;
@@ -10,12 +11,18 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
 
   const nodeMap = new Map<string, GraphNode>();
   const labels = new Map<string, string>();
+  const types = new Map<string, string[]>();
   const metadata = new Map<string, Record<string, string[]>>();
 
-  // First pass: collect labels and identify all nodes
+  // First pass: collect labels and types
   for (const triple of triples) {
     if (triple.predicate === RDFS_LABEL && triple.objectType === 'literal') {
       labels.set(triple.subject, triple.objectValue);
+    }
+    if (triple.predicate === RDF_TYPE && triple.objectType === 'uri') {
+      const list = types.get(triple.subject) ?? [];
+      list.push(getLocalName(triple.objectValue));
+      types.set(triple.subject, list);
     }
   }
 
@@ -26,6 +33,7 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
       id: subjectUri,
       label,
       uri: subjectUri,
+      types: types.get(subjectUri) ?? [],
       metadata: {},
     });
     metadata.set(subjectUri, {});
@@ -44,6 +52,7 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
           id: object,
           label: labels.get(object) || getLocalName(object),
           uri: object,
+          types: types.get(object) ?? [],
           metadata: {},
         });
         metadata.set(object, {});

@@ -18,6 +18,12 @@ export function InfoPanel() {
     return (
       <div style={styles.panel}>
         <h3 style={styles.title}>Node: {node.label}</h3>
+        {node.types.length > 0 && (
+          <div style={styles.section}>
+            <strong>Type:</strong>
+            <span style={styles.value}>{node.types.join(', ')}</span>
+          </div>
+        )}
         <div style={styles.section}>
           <strong>URI:</strong>
           <p style={styles.uri}>{node.uri}</p>

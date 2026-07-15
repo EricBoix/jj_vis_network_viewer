@@ -32,7 +32,7 @@ const styles = {
   button: {
     backgroundColor: 'white',
     color: colors.primary,
-    border: 'none',
+    border: `1px solid ${colors.border}`,
     padding: '6px 12px',
     borderRadius: '4px',
     cursor: 'pointer',
@@ -40,5 +40,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
   },
 } satisfies Record<string, React.CSSProperties>;

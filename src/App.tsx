@@ -46,13 +46,15 @@ function AppContent() {
         <h1 style={styles.title}>Knowledge Graph Visualization</h1>
         <div style={styles.toolbar}>
           <LoadRdfButton />
-          <PhysicsToggle />
           <SettingsMenu />
         </div>
       </header>
       <div style={styles.main}>
         <div style={styles.canvasContainer}>
           <GraphCanvas />
+          <div style={styles.physicsToggle}>
+            <PhysicsToggle />
+          </div>
         </div>
         <ResizeHandle onMouseDown={onHandleMouseDown} />
         <Sidebar width={sidebarWidth} />

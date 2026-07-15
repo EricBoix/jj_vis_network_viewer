@@ -52,7 +52,7 @@ export function EditPanel() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   panel: {
     padding: '16px',
     height: '100%',
@@ -92,4 +92,4 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     fontSize: '14px',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

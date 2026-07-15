@@ -31,7 +31,7 @@ export function LoadRdfButton() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   button: {
     backgroundColor: 'white',
     color: '#2B7CE9',
@@ -41,4 +41,4 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     fontWeight: 500,
   },
-};
+} satisfies Record<string, React.CSSProperties>;

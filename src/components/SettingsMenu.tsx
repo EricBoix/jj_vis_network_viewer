@@ -65,7 +65,7 @@ export function SettingsMenu() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   wrapper: {
     position: 'relative',
   },
@@ -95,7 +95,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    whiteSpace: 'nowrap' as const,
+    whiteSpace: 'nowrap',
   },
   rowLabel: {
     fontSize: '14px',
@@ -125,4 +125,4 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: 'white',
     color: '#2B7CE9',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

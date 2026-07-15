@@ -55,7 +55,7 @@ export function OverviewPanel() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   panel: {
     padding: '12px 16px',
     overflowY: 'auto',
@@ -91,4 +91,4 @@ const styles: Record<string, React.CSSProperties> = {
     fontStyle: 'italic',
     fontSize: '13px',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

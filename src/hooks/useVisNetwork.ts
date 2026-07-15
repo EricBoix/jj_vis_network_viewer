@@ -74,8 +74,11 @@ export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, onS
   const networkRef = useRef<Network | null>(null);
   const nodesDataSetRef = useRef<DataSet<{ id: string; label: string }>>(new DataSet());
   const edgesDataSetRef = useRef<DataSet<{ id: string; from: string; to: string; label: string }>>(new DataSet());
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
 
-  // Initialize network
+  // Initialize network once; event handlers read onSelectRef so they always
+  // call the latest callback without recreating the network on every render.
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -90,22 +93,22 @@ export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, onS
 
     network.on('selectNode', (params) => {
       if (params.nodes.length > 0) {
-        onSelect({ type: 'node', id: params.nodes[0] });
+        onSelectRef.current({ type: 'node', id: params.nodes[0] });
       }
     });
 
     network.on('selectEdge', (params) => {
       if (params.edges.length > 0 && params.nodes.length === 0) {
-        onSelect({ type: 'edge', id: params.edges[0] });
+        onSelectRef.current({ type: 'edge', id: params.edges[0] });
       }
     });
 
     network.on('deselectNode', () => {
-      onSelect({ type: null, id: null });
+      onSelectRef.current({ type: null, id: null });
     });
 
     network.on('deselectEdge', () => {
-      onSelect({ type: null, id: null });
+      onSelectRef.current({ type: null, id: null });
     });
 
     networkRef.current = network;
@@ -114,7 +117,7 @@ export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, onS
       network.destroy();
       networkRef.current = null;
     };
-  }, [onSelect]);
+  }, []);
 
   // Sync nodes
   useEffect(() => {

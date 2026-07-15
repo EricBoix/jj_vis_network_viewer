@@ -24,7 +24,7 @@ export function ResizeHandle({ onMouseDown }: ResizeHandleProps) {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   handle: {
     width: '6px',
     cursor: 'col-resize',
@@ -38,4 +38,4 @@ const styles: Record<string, React.CSSProperties> = {
     height: '32px',
     borderRadius: '1px',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

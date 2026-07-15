@@ -27,7 +27,7 @@ export function PhysicsToggle() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   button: {
     backgroundColor: 'white',
     color: '#2B7CE9',
@@ -40,4 +40,4 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '6px',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

@@ -41,7 +41,7 @@ export function Sidebar({ width }: SidebarProps) {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   sidebar: {
     display: 'flex',
     flexDirection: 'column',
@@ -68,4 +68,4 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     overflow: 'auto',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

@@ -67,7 +67,7 @@ export function InfoPanel() {
   return null;
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles = {
   panel: {
     padding: '16px',
     height: '100%',
@@ -105,4 +105,4 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 'bold',
     color: '#444',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

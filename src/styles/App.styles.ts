@@ -1,4 +1,4 @@
-export const styles: Record<string, React.CSSProperties> = {
+export const styles = {
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -31,4 +31,4 @@ export const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     position: 'relative',
   },
-};
+} satisfies Record<string, React.CSSProperties>;

@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { InfoPanel } from './InfoPanel';
 import { EditPanel } from './EditPanel';
 
-export function Sidebar() {
+interface SidebarProps {
+  width: number;
+}
+
+export function Sidebar({ width }: SidebarProps) {
   const [activePanel, setActivePanel] = useState<'info' | 'edit'>('info');
 
   return (
-    <div style={styles.sidebar}>
+    <div style={{ ...styles.sidebar, width }}>
       <div style={styles.tabs}>
         <button
           onClick={() => setActivePanel('info')}
@@ -30,7 +34,6 @@ export function Sidebar() {
 
 const styles: Record<string, React.CSSProperties> = {
   sidebar: {
-    width: '300px',
     display: 'flex',
     flexDirection: 'column',
     borderLeft: '1px solid #ccc',

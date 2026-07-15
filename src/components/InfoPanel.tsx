@@ -28,8 +28,8 @@ export function InfoPanel() {
             <ul style={styles.list}>
               {Object.entries(node.metadata).map(([key, values]) => (
                 <li key={key}>
-                  <span style={styles.key}>{key}:</span>{' '}
-                  {values.join(', ')}
+                  <span style={styles.key}>{key}:</span>
+                  <span style={styles.value}>{values.join(', ')}</span>
                 </li>
               ))}
             </ul>
@@ -51,10 +51,12 @@ export function InfoPanel() {
           <p style={styles.uri}>{edge.predicateUri}</p>
         </div>
         <div style={styles.section}>
-          <strong>From:</strong> {edge.from.split('/').pop()}
+          <strong>From:</strong>
+          <p style={styles.uri}>{edge.from}</p>
         </div>
         <div style={styles.section}>
-          <strong>To:</strong> {edge.to.split('/').pop()}
+          <strong>To:</strong>
+          <p style={styles.uri}>{edge.to}</p>
         </div>
       </div>
     );
@@ -93,6 +95,11 @@ const styles: Record<string, React.CSSProperties> = {
   list: {
     margin: '8px 0',
     paddingLeft: '20px',
+  },
+  value: {
+    display: 'block',
+    wordBreak: 'break-all',
+    overflowWrap: 'break-word',
   },
   key: {
     fontWeight: 'bold',

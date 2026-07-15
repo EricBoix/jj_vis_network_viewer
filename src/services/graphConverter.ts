@@ -44,7 +44,7 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
     const { subject, predicate, object, objectType, objectValue } = triple;
     const predicateLocal = getLocalName(predicate);
 
-    if (objectType === 'uri' || objectType === 'blank') {
+    if ((objectType === 'uri' || objectType === 'blank') && predicate !== RDF_TYPE) {
       // URI/blank node object -> create edge
       // Also ensure the object node exists
       if (!nodeMap.has(object)) {

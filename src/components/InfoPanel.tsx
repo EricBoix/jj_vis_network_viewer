@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useGraphData } from '../context/GraphDataContext';
 
 export function InfoPanel() {
@@ -74,7 +75,7 @@ const styles = {
     overflowY: 'auto',
   },
   placeholder: {
-    color: '#888',
+    color: colors.textPlaceholder,
     fontStyle: 'italic',
   },
   title: {
@@ -89,7 +90,7 @@ const styles = {
   uri: {
     fontSize: '12px',
     wordBreak: 'break-all',
-    color: '#666',
+    color: colors.textMuted,
     margin: '4px 0',
   },
   list: {
@@ -103,6 +104,6 @@ const styles = {
   },
   key: {
     fontWeight: 'bold',
-    color: '#444',
+    color: colors.textKey,
   },
 } satisfies Record<string, React.CSSProperties>;

@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useState } from 'react';
 import { InfoPanel } from './InfoPanel';
 import { EditPanel } from './EditPanel';
@@ -45,24 +46,24 @@ const styles = {
   sidebar: {
     display: 'flex',
     flexDirection: 'column',
-    borderLeft: '1px solid #ccc',
+    borderLeft: `1px solid ${colors.border}`,
   },
   tabs: {
     display: 'flex',
-    borderBottom: '1px solid #ccc',
+    borderBottom: `1px solid ${colors.border}`,
   },
   tab: {
     flex: 1,
     padding: '12px',
     border: 'none',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.backgroundTab,
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: 500,
   },
   activeTab: {
     backgroundColor: 'white',
-    borderBottom: '2px solid #2B7CE9',
+    borderBottom: `2px solid ${colors.primary}`,
   },
   panelContainer: {
     flex: 1,

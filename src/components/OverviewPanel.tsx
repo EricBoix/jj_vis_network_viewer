@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useMemo } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
@@ -70,7 +71,7 @@ const styles = {
     fontWeight: 600,
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
-    color: '#555',
+    color: colors.textSubtle,
     borderBottom: '1px solid #eee',
     paddingBottom: '4px',
   },
@@ -87,7 +88,7 @@ const styles = {
     flexShrink: 0,
   },
   empty: {
-    color: '#aaa',
+    color: colors.textFaint,
     fontStyle: 'italic',
     fontSize: '13px',
   },

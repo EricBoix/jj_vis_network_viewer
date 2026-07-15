@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useViewSettings } from '../context/ViewSettingsContext';
 
 const PlayIcon = () => (
@@ -30,7 +31,7 @@ export function PhysicsToggle() {
 const styles = {
   button: {
     backgroundColor: 'white',
-    color: '#2B7CE9',
+    color: colors.primary,
     border: 'none',
     padding: '6px 12px',
     borderRadius: '4px',

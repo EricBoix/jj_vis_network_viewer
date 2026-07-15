@@ -5,10 +5,12 @@ import { useGraphData } from './GraphDataContext';
 interface ViewSettingsContextValue {
   nodeLabelMode: NodeLabelMode;
   physicsEnabled: boolean;
+  hideIsolatedNodes: boolean;
   visibleNodeTypes: Set<string>;
   visibleEdgeTypes: Set<string>;
   setNodeLabelMode: (mode: NodeLabelMode) => void;
   setPhysicsEnabled: (enabled: boolean) => void;
+  setHideIsolatedNodes: (value: boolean) => void;
   toggleNodeType: (type: string) => void;
   toggleEdgeType: (type: string) => void;
 }
@@ -20,6 +22,7 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
 
   const [nodeLabelMode, setNodeLabelMode] = useState<NodeLabelMode>('name');
   const [physicsEnabled, setPhysicsEnabled] = useState(true);
+  const [hideIsolatedNodes, setHideIsolatedNodes] = useState(true);
   const [visibleNodeTypes, setVisibleNodeTypes] = useState<Set<string>>(new Set());
   const [visibleEdgeTypes, setVisibleEdgeTypes] = useState<Set<string>>(new Set());
 
@@ -46,8 +49,8 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
 
   return (
     <ViewSettingsContext.Provider value={{
-      nodeLabelMode, physicsEnabled, visibleNodeTypes, visibleEdgeTypes,
-      setNodeLabelMode, setPhysicsEnabled, toggleNodeType, toggleEdgeType,
+      nodeLabelMode, physicsEnabled, hideIsolatedNodes, visibleNodeTypes, visibleEdgeTypes,
+      setNodeLabelMode, setPhysicsEnabled, setHideIsolatedNodes, toggleNodeType, toggleEdgeType,
     }}>
       {children}
     </ViewSettingsContext.Provider>

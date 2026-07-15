@@ -1,3 +1,4 @@
+import { colors } from './theme';
 export const styles = {
   container: {
     display: 'flex',
@@ -10,7 +11,7 @@ export const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '12px 24px',
-    backgroundColor: '#2B7CE9',
+    backgroundColor: colors.primary,
     color: 'white',
   },
   title: {

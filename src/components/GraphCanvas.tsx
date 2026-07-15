@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useMemo } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
@@ -5,7 +6,7 @@ import { useVisNetwork } from '../hooks/useVisNetwork';
 
 export function GraphCanvas() {
   const { nodes, edges, setSelection } = useGraphData();
-  const { nodeLabelMode, physicsEnabled, visibleNodeTypes, visibleEdgeTypes } = useViewSettings();
+  const { nodeLabelMode, physicsEnabled, hideIsolatedNodes, visibleNodeTypes, visibleEdgeTypes } = useViewSettings();
 
   const visibleNodes = useMemo(
     () => nodes.filter(n => n.types.length === 0 || n.types.some(t => visibleNodeTypes.has(t))),
@@ -26,9 +27,35 @@ export function GraphCanvas() {
     [edges, visibleEdgeTypes, visibleNodeIds]
   );
 
+  // Second filter pass: drop nodes whose every edge connects to a Document node.
+  const displayedNodes = useMemo(() => {
+    if (!hideIsolatedNodes) return visibleNodes;
+    const documentIds = new Set(
+      visibleNodes.filter(n => n.types.includes('Document')).map(n => n.id)
+    );
+    const connectedToNonDoc = new Set<string>();
+    for (const edge of visibleEdges) {
+      if (!documentIds.has(edge.from) || !documentIds.has(edge.to)) {
+        connectedToNonDoc.add(edge.from);
+        connectedToNonDoc.add(edge.to);
+      }
+    }
+    return visibleNodes.filter(n => documentIds.has(n.id) || connectedToNonDoc.has(n.id));
+  }, [visibleNodes, visibleEdges, hideIsolatedNodes]);
+
+  const displayedNodeIds = useMemo(
+    () => new Set(displayedNodes.map(n => n.id)),
+    [displayedNodes]
+  );
+
+  const displayedEdges = useMemo(
+    () => visibleEdges.filter(e => displayedNodeIds.has(e.from) && displayedNodeIds.has(e.to)),
+    [visibleEdges, displayedNodeIds]
+  );
+
   const { containerRef } = useVisNetwork({
-    nodes: visibleNodes,
-    edges: visibleEdges,
+    nodes: displayedNodes,
+    edges: displayedEdges,
     nodeLabelMode,
     physicsEnabled,
     onSelect: setSelection,
@@ -40,8 +67,8 @@ export function GraphCanvas() {
       style={{
         width: '100%',
         height: '100%',
-        border: '1px solid #ccc',
-        backgroundColor: '#fafafa',
+        border: `1px solid ${colors.border}`,
+        backgroundColor: colors.backgroundCanvas,
       }}
     />
   );

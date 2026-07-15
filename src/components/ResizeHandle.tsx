@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useState } from 'react';
 
 // Draggable vertical bar between the graph canvas and the sidebar.
@@ -15,11 +16,11 @@ export function ResizeHandle({ onMouseDown }: ResizeHandleProps) {
       onMouseLeave={() => setHovered(false)}
       style={{
         ...styles.handle,
-        backgroundColor: hovered ? '#bdbdbd' : '#e0e0e0',
+        backgroundColor: hovered ? colors.resizeHandleHover : colors.resizeHandleDefault,
       }}
       title="Drag to resize"
     >
-      <div style={{ ...styles.grip, backgroundColor: hovered ? '#888' : '#bbb' }} />
+      <div style={{ ...styles.grip, backgroundColor: hovered ? colors.textPlaceholder : colors.resizeGripDefault }} />
     </div>
   );
 }

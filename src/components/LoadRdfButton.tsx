@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useRef } from 'react';
 import { useRdfStore } from '../hooks/useRdfStore';
 
@@ -34,7 +35,7 @@ export function LoadRdfButton() {
 const styles = {
   button: {
     backgroundColor: 'white',
-    color: '#2B7CE9',
+    color: colors.primary,
     border: 'none',
     padding: '8px 16px',
     borderRadius: '4px',

@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useEffect, useRef, useCallback } from 'react';
 import { Network, Options } from 'vis-network';
 import { DataSet } from 'vis-data';
@@ -19,23 +20,23 @@ const networkOptions: Options = {
     size: 20,
     font: {
       size: 14,
-      color: '#333',
+      color: colors.textDark,
     },
     borderWidth: 2,
     color: {
-      border: '#2B7CE9',
-      background: '#97C2FC',
+      border: colors.primary,
+      background: colors.nodeBackground,
       highlight: {
-        border: '#2B7CE9',
-        background: '#D2E5FF',
+        border: colors.primary,
+        background: colors.primaryHighlight,
       },
     },
   },
   edges: {
     width: 2,
     color: {
-      color: '#848484',
-      highlight: '#2B7CE9',
+      color: colors.edgeDefault,
+      highlight: colors.primary,
     },
     font: {
       size: 12,

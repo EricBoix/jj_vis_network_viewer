@@ -1,3 +1,4 @@
+import { colors } from '../styles/theme';
 import { useState, useEffect } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 
@@ -58,7 +59,7 @@ const styles = {
     height: '100%',
   },
   placeholder: {
-    color: '#888',
+    color: colors.textPlaceholder,
     fontStyle: 'italic',
   },
   title: {
@@ -78,13 +79,13 @@ const styles = {
   input: {
     width: '100%',
     padding: '8px',
-    border: '1px solid #ccc',
+    border: `1px solid ${colors.border}`,
     borderRadius: '4px',
     fontSize: '14px',
     boxSizing: 'border-box',
   },
   button: {
-    backgroundColor: '#2B7CE9',
+    backgroundColor: colors.primary,
     color: 'white',
     border: 'none',
     padding: '8px 16px',

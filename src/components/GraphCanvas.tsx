@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
 import { useVisNetwork } from '../hooks/useVisNetwork';
@@ -6,14 +7,23 @@ export function GraphCanvas() {
   const { nodes, edges, setSelection } = useGraphData();
   const { nodeLabelMode, physicsEnabled, visibleNodeTypes, visibleEdgeTypes } = useViewSettings();
 
-  const visibleNodes = nodes.filter(n =>
-    n.types.length === 0 || n.types.some(t => visibleNodeTypes.has(t))
+  const visibleNodes = useMemo(
+    () => nodes.filter(n => n.types.length === 0 || n.types.some(t => visibleNodeTypes.has(t))),
+    [nodes, visibleNodeTypes]
   );
-  const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
-  const visibleEdges = edges.filter(e =>
-    visibleEdgeTypes.has(e.label) &&
-    visibleNodeIds.has(e.from) &&
-    visibleNodeIds.has(e.to)
+
+  const visibleNodeIds = useMemo(
+    () => new Set(visibleNodes.map(n => n.id)),
+    [visibleNodes]
+  );
+
+  const visibleEdges = useMemo(
+    () => edges.filter(e =>
+      visibleEdgeTypes.has(e.label) &&
+      visibleNodeIds.has(e.from) &&
+      visibleNodeIds.has(e.to)
+    ),
+    [edges, visibleEdgeTypes, visibleNodeIds]
   );
 
   const { containerRef } = useVisNetwork({

@@ -1,12 +1,14 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { GraphNode, GraphEdge, GraphData, Selection } from '../types/graph.types';
+import { GraphNode, GraphEdge, GraphData, Selection, NodeLabelMode } from '../types/graph.types';
 
 interface GraphContextValue {
   nodes: GraphNode[];
   edges: GraphEdge[];
   selection: Selection;
+  nodeLabelMode: NodeLabelMode;
   setGraphData: (data: GraphData) => void;
   setSelection: (selection: Selection) => void;
+  setNodeLabelMode: (mode: NodeLabelMode) => void;
   updateNode: (id: string, updates: Partial<Pick<GraphNode, 'label' | 'metadata'>>) => void;
   updateEdge: (id: string, updates: Partial<Pick<GraphEdge, 'label'>>) => void;
   getSelectedNode: () => GraphNode | undefined;
@@ -19,6 +21,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [edges, setEdges] = useState<GraphEdge[]>([]);
   const [selection, setSelection] = useState<Selection>({ type: null, id: null });
+  const [nodeLabelMode, setNodeLabelMode] = useState<NodeLabelMode>('name');
 
   const setGraphData = useCallback((data: GraphData) => {
     setNodes(data.nodes);
@@ -57,8 +60,10 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       nodes,
       edges,
       selection,
+      nodeLabelMode,
       setGraphData,
       setSelection,
+      setNodeLabelMode,
       updateNode,
       updateEdge,
       getSelectedNode,

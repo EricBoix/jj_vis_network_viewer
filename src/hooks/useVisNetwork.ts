@@ -1,11 +1,14 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Network, Options } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { GraphNode, GraphEdge, Selection } from '../types/graph.types';
+import { GraphNode, GraphEdge, Selection, NodeLabelMode } from '../types/graph.types';
+
+const NEO_ID_PREDICATE = 'id';
 
 interface UseVisNetworkProps {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  nodeLabelMode: NodeLabelMode;
   onSelect: (selection: Selection) => void;
 }
 
@@ -65,7 +68,7 @@ const networkOptions: Options = {
   },
 };
 
-export function useVisNetwork({ nodes, edges, onSelect }: UseVisNetworkProps) {
+export function useVisNetwork({ nodes, edges, nodeLabelMode, onSelect }: UseVisNetworkProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const networkRef = useRef<Network | null>(null);
   const nodesDataSetRef = useRef<DataSet<{ id: string; label: string }>>(new DataSet());
@@ -125,9 +128,14 @@ export function useVisNetwork({ nodes, edges, onSelect }: UseVisNetworkProps) {
     }
 
     // Update/add nodes
-    const updates = nodes.map(n => ({ id: n.id, label: n.label }));
+    const updates = nodes.map(n => ({
+      id: n.id,
+      label: nodeLabelMode === 'neoId'
+        ? (n.metadata[NEO_ID_PREDICATE]?.[0] ?? n.label)
+        : n.label,
+    }));
     dataSet.update(updates);
-  }, [nodes]);
+  }, [nodes, nodeLabelMode]);
 
   // Sync edges
   useEffect(() => {

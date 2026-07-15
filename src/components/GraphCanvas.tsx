@@ -2,11 +2,12 @@ import { useGraph } from '../context/GraphContext';
 import { useVisNetwork } from '../hooks/useVisNetwork';
 
 export function GraphCanvas() {
-  const { nodes, edges, setSelection } = useGraph();
+  const { nodes, edges, nodeLabelMode, setSelection } = useGraph();
 
   const { containerRef } = useVisNetwork({
     nodes,
     edges,
+    nodeLabelMode,
     onSelect: setSelection,
   });
 

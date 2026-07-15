@@ -1,10 +1,13 @@
 @prefix ex: <http://example.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix neo: <http://example.org/neo4j/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 ex:Alice
   a foaf:Person ;
   rdfs:label "Alice" ;
+  neo:id "alice-001"^^xsd:string ;
   foaf:name "Alice Smith" ;
   foaf:age "30" ;
   foaf:knows ex:Bob, ex:Charlie .
@@ -12,6 +15,7 @@ ex:Alice
 ex:Bob
   a foaf:Person ;
   rdfs:label "Bob" ;
+  neo:id "bob-002"^^xsd:string ;
   foaf:name "Bob Johnson" ;
   foaf:age "28" ;
   foaf:knows ex:Alice .
@@ -19,6 +23,7 @@ ex:Bob
 ex:Charlie
   a foaf:Person ;
   rdfs:label "Charlie" ;
+  neo:id "charlie-003"^^xsd:string ;
   foaf:name "Charlie Brown" ;
   foaf:age "35" ;
   foaf:worksAt ex:AcmeCorp .
@@ -26,11 +31,13 @@ ex:Charlie
 ex:AcmeCorp
   a ex:Company ;
   rdfs:label "Acme Corporation" ;
+  neo:id "acme-004"^^xsd:string ;
   ex:industry "Technology" ;
   ex:founded "2010" .
 
 ex:Project1
   a ex:Project ;
   rdfs:label "Knowledge Graph" ;
+  neo:id "project-005"^^xsd:string ;
   ex:leader ex:Alice ;
   ex:contributor ex:Bob, ex:Charlie .

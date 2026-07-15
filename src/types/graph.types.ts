@@ -20,6 +20,8 @@ export interface GraphData {
 
 export type SelectionType = 'node' | 'edge' | null;
 
+export type NodeLabelMode = 'name' | 'neoId';
+
 export interface Selection {
   type: SelectionType;
   id: string | null;

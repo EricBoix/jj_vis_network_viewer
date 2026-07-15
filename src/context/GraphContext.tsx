@@ -6,9 +6,13 @@ interface GraphContextValue {
   edges: GraphEdge[];
   selection: Selection;
   nodeLabelMode: NodeLabelMode;
+  visibleNodeTypes: Set<string>;
+  visibleEdgeTypes: Set<string>;
   setGraphData: (data: GraphData) => void;
   setSelection: (selection: Selection) => void;
   setNodeLabelMode: (mode: NodeLabelMode) => void;
+  toggleNodeType: (type: string) => void;
+  toggleEdgeType: (type: string) => void;
   updateNode: (id: string, updates: Partial<Pick<GraphNode, 'label' | 'metadata'>>) => void;
   updateEdge: (id: string, updates: Partial<Pick<GraphEdge, 'label'>>) => void;
   getSelectedNode: () => GraphNode | undefined;
@@ -22,11 +26,31 @@ export function GraphProvider({ children }: { children: ReactNode }) {
   const [edges, setEdges] = useState<GraphEdge[]>([]);
   const [selection, setSelection] = useState<Selection>({ type: null, id: null });
   const [nodeLabelMode, setNodeLabelMode] = useState<NodeLabelMode>('name');
+  const [visibleNodeTypes, setVisibleNodeTypes] = useState<Set<string>>(new Set());
+  const [visibleEdgeTypes, setVisibleEdgeTypes] = useState<Set<string>>(new Set());
 
   const setGraphData = useCallback((data: GraphData) => {
     setNodes(data.nodes);
     setEdges(data.edges);
     setSelection({ type: null, id: null });
+    setVisibleNodeTypes(new Set(data.nodes.flatMap(n => n.types)));
+    setVisibleEdgeTypes(new Set(data.edges.map(e => e.label)));
+  }, []);
+
+  const toggleNodeType = useCallback((type: string) => {
+    setVisibleNodeTypes(prev => {
+      const next = new Set(prev);
+      next.has(type) ? next.delete(type) : next.add(type);
+      return next;
+    });
+  }, []);
+
+  const toggleEdgeType = useCallback((type: string) => {
+    setVisibleEdgeTypes(prev => {
+      const next = new Set(prev);
+      next.has(type) ? next.delete(type) : next.add(type);
+      return next;
+    });
   }, []);
 
   const updateNode = useCallback((id: string, updates: Partial<Pick<GraphNode, 'label' | 'metadata'>>) => {
@@ -61,9 +85,13 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       edges,
       selection,
       nodeLabelMode,
+      visibleNodeTypes,
+      visibleEdgeTypes,
       setGraphData,
       setSelection,
       setNodeLabelMode,
+      toggleNodeType,
+      toggleEdgeType,
       updateNode,
       updateEdge,
       getSelectedNode,

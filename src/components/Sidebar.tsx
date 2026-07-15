@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { InfoPanel } from './InfoPanel';
 import { EditPanel } from './EditPanel';
+import { OverviewPanel } from './OverviewPanel';
 
 interface SidebarProps {
   width: number;
 }
 
 export function Sidebar({ width }: SidebarProps) {
-  const [activePanel, setActivePanel] = useState<'info' | 'edit'>('info');
+  const [activePanel, setActivePanel] = useState<'info' | 'edit' | 'overview'>('info');
 
   return (
     <div style={{ ...styles.sidebar, width }}>
@@ -24,9 +25,17 @@ export function Sidebar({ width }: SidebarProps) {
         >
           Edit
         </button>
+        <button
+          onClick={() => setActivePanel('overview')}
+          style={{ ...styles.tab, ...(activePanel === 'overview' ? styles.activeTab : {}) }}
+        >
+          Overview
+        </button>
       </div>
       <div style={styles.panelContainer}>
-        {activePanel === 'info' ? <InfoPanel /> : <EditPanel />}
+        {activePanel === 'info' && <InfoPanel />}
+        {activePanel === 'edit' && <EditPanel />}
+        {activePanel === 'overview' && <OverviewPanel />}
       </div>
     </div>
   );

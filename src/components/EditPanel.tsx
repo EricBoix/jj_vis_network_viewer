@@ -55,7 +55,6 @@ export function EditPanel() {
 const styles: Record<string, React.CSSProperties> = {
   panel: {
     padding: '16px',
-    backgroundColor: '#fff',
     height: '100%',
   },
   placeholder: {

@@ -70,7 +70,6 @@ export function InfoPanel() {
 const styles: Record<string, React.CSSProperties> = {
   panel: {
     padding: '16px',
-    backgroundColor: '#fff',
     height: '100%',
     overflowY: 'auto',
   },

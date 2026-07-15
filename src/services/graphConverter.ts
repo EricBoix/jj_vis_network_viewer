@@ -78,10 +78,9 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
     }
   }
 
-  // Attach metadata to nodes
+  // Build final nodes with their collected metadata
   for (const [uri, node] of nodeMap) {
-    node.metadata = metadata.get(uri) || {};
-    nodes.push(node);
+    nodes.push({ ...node, metadata: metadata.get(uri) ?? {} });
   }
 
   return { nodes, edges };

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GraphProvider } from './context/GraphContext';
 import { GraphCanvas } from './components/GraphCanvas';
 import { LoadRdfButton } from './components/LoadRdfButton';
@@ -17,7 +17,6 @@ const SIDEBAR_DEFAULT = 300;
 function AppContent() {
   const { loadRdfFromString } = useRdfStore();
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT);
-  const sidebarWidthRef = useRef(sidebarWidth);
 
   useEffect(() => {
     loadRdfFromString(sampleTtl);
@@ -26,12 +25,10 @@ function AppContent() {
   function onHandleMouseDown(e: React.MouseEvent) {
     e.preventDefault();
     const startX = e.clientX;
-    const startWidth = sidebarWidthRef.current;
+    const startWidth = sidebarWidth;
 
     function onMouseMove(ev: MouseEvent) {
-      const newWidth = Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, startWidth + startX - ev.clientX));
-      sidebarWidthRef.current = newWidth;
-      setSidebarWidth(newWidth);
+      setSidebarWidth(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, startWidth + startX - ev.clientX)));
     }
 
     function onMouseUp() {

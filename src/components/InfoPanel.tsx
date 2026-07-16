@@ -1,7 +1,7 @@
-import { colors } from '../styles/theme';
 import { useGraphData } from '../context/GraphDataContext';
 import { NodeInfoPanel } from './NodeInfoPanel';
 import { EdgeInfoPanel } from './EdgeInfoPanel';
+import { styles } from './InfoPanel.styles';
 
 export function InfoPanel() {
   const { selection } = useGraphData();
@@ -17,14 +17,3 @@ export function InfoPanel() {
   );
 }
 
-const styles = {
-  panel: {
-    padding: '16px',
-    height: '100%',
-    overflowY: 'auto',
-  },
-  placeholder: {
-    color: colors.textPlaceholder,
-    fontStyle: 'italic',
-  },
-} satisfies Record<string, React.CSSProperties>;

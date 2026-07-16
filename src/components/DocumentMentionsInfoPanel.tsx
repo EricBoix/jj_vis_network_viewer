@@ -1,10 +1,10 @@
 import { useMemo, useState, useEffect, Fragment } from 'react';
-import { colors } from '../styles/theme';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
 import { getLocalName, uriToPrefixedName } from '../services/rdfParser';
 import { config } from '../config';
 import { GraphNode } from '../types/graph.types';
+import { styles, highlightStyle } from './DocumentMentionsInfoPanel.styles';
 
 const NEO_ID_PREDICATE = config.rdf.neo4jIdPredicateUri;
 const DOCUMENT_TYPE = 'Document';
@@ -26,25 +26,20 @@ function highlightText(text: string, term: string | undefined): React.ReactNode 
   );
 }
 
-const highlightStyle: React.CSSProperties = {
-  backgroundColor: '#fff176',
-  borderRadius: '2px',
-  padding: '0 1px',
-};
-
 interface DocTooltip { node: GraphNode; x: number; y: number }
 
-export function DocumentMentions() {
-  const { selectedNode, nodes, edges, namespaces } = useGraphData();
+interface Props { node: GraphNode }
+
+export function DocumentMentions({ node }: Props) {
+  const { nodes, edges, namespaces } = useGraphData();
   const { nodeLabelMode } = useViewSettings();
 
-  const neoId = selectedNode?.metadata[NEO_ID_PREDICATE]?.[0];
+  const neoId = node.metadata[NEO_ID_PREDICATE]?.[0];
 
   const [docTooltip, setDocTooltip] = useState<DocTooltip | null>(null);
-  useEffect(() => { setDocTooltip(null); }, [selectedNode]);
+  useEffect(() => { setDocTooltip(null); }, [node]);
 
   const adjacentDocuments = useMemo((): GraphNode[] => {
-    if (!selectedNode) return [];
     const seen = new Set<string>();
     const collect = (candidates: (GraphNode | undefined)[]) =>
       candidates.filter((n): n is GraphNode => {
@@ -53,10 +48,10 @@ export function DocumentMentions() {
         return true;
       });
     return [
-      ...collect(edges.filter(e => e.from === selectedNode.id).map(e => nodes.find(n => n.id === e.to))),
-      ...collect(edges.filter(e => e.to   === selectedNode.id).map(e => nodes.find(n => n.id === e.from))),
+      ...collect(edges.filter(e => e.from === node.id).map(e => nodes.find(n => n.id === e.to))),
+      ...collect(edges.filter(e => e.to   === node.id).map(e => nodes.find(n => n.id === e.from))),
     ];
-  }, [selectedNode, edges, nodes]);
+  }, [node, edges, nodes]);
 
   if (adjacentDocuments.length === 0) return null;
 
@@ -110,66 +105,3 @@ export function DocumentMentions() {
   );
 }
 
-const styles = {
-  divider: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    margin: '16px 0 12px',
-  },
-  dividerLine: {
-    flex: 1,
-    border: 'none',
-    borderTop: `1px solid ${colors.border}`,
-  },
-  dividerLabel: {
-    flexShrink: 0,
-    fontSize: '11px',
-    fontWeight: 'bold',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.08em',
-    color: colors.textPlaceholder,
-    whiteSpace: 'nowrap' as const,
-  },
-  list: {
-    margin: '8px 0',
-    paddingLeft: '20px',
-  },
-  uri: {
-    fontSize: '12px',
-    wordBreak: 'break-all',
-    color: colors.textMuted,
-    margin: '4px 0',
-  },
-  documentItem: {
-    cursor: 'default',
-  },
-  documentLabel: {
-    fontWeight: 'bold',
-    color: colors.textSubtle,
-  },
-  tooltip: {
-    position: 'fixed',
-    zIndex: 1000,
-    background: '#fff',
-    border: `1px solid ${colors.border}`,
-    borderRadius: '6px',
-    padding: '10px 12px',
-    boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
-    maxWidth: '340px',
-    maxHeight: '260px',
-    overflowY: 'auto',
-    fontSize: '12px',
-    lineHeight: '1.5',
-    pointerEvents: 'none',
-  },
-  tooltipSection: {
-    marginBottom: '8px',
-  },
-  tooltipText: {
-    margin: '2px 0 0',
-    color: colors.textMuted,
-    wordBreak: 'break-word',
-    overflowWrap: 'break-word',
-  },
-} satisfies Record<string, React.CSSProperties>;

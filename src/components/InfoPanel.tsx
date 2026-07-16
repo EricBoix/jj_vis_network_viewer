@@ -26,7 +26,7 @@ export function InfoPanel() {
         )}
         <div style={styles.section}>
           <strong>URI:</strong>
-          <p style={styles.uri}>{selectedNode.uri}</p>
+          <p style={styles.uri} title={selectedNode.uri}>{uriToPrefixedName(selectedNode.uri, namespaces)}</p>
         </div>
         {Object.keys(selectedNode.metadata).length > 0 && (
           <div style={styles.section}>
@@ -54,15 +54,15 @@ export function InfoPanel() {
         <h3 style={styles.title}>Edge: {selectedEdge.label}</h3>
         <div style={styles.section}>
           <strong>Predicate URI:</strong>
-          <p style={styles.uri}>{selectedEdge.predicateUri}</p>
+          <p style={styles.uri} title={selectedEdge.predicateUri}>{uriToPrefixedName(selectedEdge.predicateUri, namespaces)}</p>
         </div>
         <div style={styles.section}>
           <strong>From:</strong>
-          <p style={styles.uri}>{selectedEdge.from}</p>
+          <p style={styles.uri} title={selectedEdge.from}>{uriToPrefixedName(selectedEdge.from, namespaces)}</p>
         </div>
         <div style={styles.section}>
           <strong>To:</strong>
-          <p style={styles.uri}>{selectedEdge.to}</p>
+          <p style={styles.uri} title={selectedEdge.to}>{uriToPrefixedName(selectedEdge.to, namespaces)}</p>
         </div>
       </div>
     );

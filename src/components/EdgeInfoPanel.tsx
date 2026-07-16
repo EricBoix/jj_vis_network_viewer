@@ -53,7 +53,7 @@ export function EdgeInfoPanel() {
     const node = resolveNode(uri);
     if (!node) return {};
     return {
-      onMouseEnter: (e: React.MouseEvent) => setNodePopup({ node, x: e.clientX, y: e.clientY }),
+      onMouseEnter: (e: React.MouseEvent) => { setAnchoredPopup(null); setNodePopup({ node, x: e.clientX, y: e.clientY }); },
       onMouseMove:  (e: React.MouseEvent) => setNodePopup(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null),
       onMouseLeave: () => setNodePopup(null),
       onClick:      () => {

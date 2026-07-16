@@ -1,9 +1,10 @@
-import { useMemo, useState, useEffect, Fragment } from 'react';
+import { useMemo, useState, useEffect, useLayoutEffect, useRef, Fragment } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
-import { getLocalName, uriToPrefixedName } from '../services/rdfParser';
+import { getLocalName } from '../services/rdfParser';
 import { config } from '../config';
 import { GraphNode } from '../types/graph.types';
+import { NodeDetails } from './NodeDetails';
 import { styles, highlightStyle } from './DocumentMentionsInfoPanel.styles';
 
 const NEO_ID_PREDICATE = config.rdf.neo4jIdPredicateUri;
@@ -26,18 +27,44 @@ function highlightText(text: string, term: string | undefined): React.ReactNode 
   );
 }
 
-interface DocTooltip { node: GraphNode; x: number; y: number }
+interface NodePopup     { node: GraphNode; x: number; y: number }
+interface AnchoredPopup { node: GraphNode; left: number; top: number }
 
 interface Props { node: GraphNode }
 
 export function DocumentMentions({ node }: Props) {
-  const { nodes, edges, namespaces } = useGraphData();
+  const { nodes, edges } = useGraphData();
   const { nodeLabelMode } = useViewSettings();
 
   const neoId = node.metadata[NEO_ID_PREDICATE]?.[0];
 
-  const [docTooltip, setDocTooltip] = useState<DocTooltip | null>(null);
-  useEffect(() => { setDocTooltip(null); }, [node]);
+  const [nodePopup,     setNodePopup]     = useState<NodePopup | null>(null);
+  const [popupLeft,     setPopupLeft]     = useState(0);
+  const [anchoredPopup, setAnchoredPopup] = useState<AnchoredPopup | null>(null);
+  const [anchoredLeft,  setAnchoredLeft]  = useState(0);
+  const popupRef    = useRef<HTMLDivElement>(null);
+  const anchoredRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!nodePopup || !popupRef.current) return;
+    const w = popupRef.current.offsetWidth;
+    setPopupLeft(Math.min(nodePopup.x + 14, window.innerWidth - w - 8));
+  }, [nodePopup]);
+
+  useLayoutEffect(() => {
+    if (!anchoredPopup || !anchoredRef.current) return;
+    const w = anchoredRef.current.offsetWidth;
+    setAnchoredLeft(Math.min(anchoredPopup.left, window.innerWidth - w - 8));
+  }, [anchoredPopup]);
+
+  useEffect(() => {
+    if (!anchoredPopup) return;
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setAnchoredPopup(null); };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [anchoredPopup]);
+
+  useEffect(() => { setNodePopup(null); setAnchoredPopup(null); }, [node]);
 
   const adjacentDocuments = useMemo((): GraphNode[] => {
     const seen = new Set<string>();
@@ -67,41 +94,60 @@ export function DocumentMentions({ node }: Props) {
           <li
             key={doc.id}
             style={styles.documentItem}
-            onMouseEnter={e => setDocTooltip({ node: doc, x: e.clientX, y: e.clientY })}
-            onMouseMove={e => setDocTooltip(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null)}
-            onMouseLeave={() => setDocTooltip(null)}
+            title="Click to pin"
+            onMouseEnter={e => { setAnchoredPopup(null); setNodePopup({ node: doc, x: e.clientX, y: e.clientY }); }}
+            onMouseMove={e  => setNodePopup(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null)}
+            onMouseLeave={() => setNodePopup(null)}
+            onClick={() => {
+              setAnchoredPopup({ node: doc, left: popupLeft, top: (nodePopup?.y ?? 0) + 14 });
+              setNodePopup(null);
+            }}
           >
             <span style={styles.documentLabel}>{
               nodeLabelMode === 'neoId'
                 ? (doc.metadata[NEO_ID_PREDICATE]?.[0] ?? doc.label)
                 : doc.label
             }</span>
-            <p style={styles.uri} title={doc.uri}>{uriToPrefixedName(doc.uri, namespaces)}</p>
           </li>
         ))}
       </ul>
-      {docTooltip && (() => {
-        const text   = findMeta(docTooltip.node.metadata, 'text');
-        const source = findMeta(docTooltip.node.metadata, 'source');
-        if (!text && !source) return null;
+      {nodePopup && (() => {
+        const text   = findMeta(nodePopup.node.metadata, 'text');
+        const source = findMeta(nodePopup.node.metadata, 'source');
+        const hasTextOrSource = text || source;
         return (
-          <div style={{ ...styles.tooltip, left: docTooltip.x + 14, top: docTooltip.y + 14 }}>
-            {text && (
-              <div style={styles.tooltipSection}>
-                <strong>Text</strong>
-                <p style={styles.tooltipText}>{highlightText(text, neoId)}</p>
-              </div>
-            )}
-            {source && (
-              <div style={styles.tooltipSection}>
-                <strong>Source</strong>
-                <p style={styles.tooltipText}>{source}</p>
-              </div>
+          <div ref={popupRef} style={{ ...styles.popup, left: popupLeft, top: nodePopup.y + 14 }}>
+            {hasTextOrSource ? (
+              <>
+                {text && (
+                  <div style={styles.tooltipSection}>
+                    <strong>Text</strong>
+                    <p style={styles.tooltipText}>{highlightText(text, neoId)}</p>
+                  </div>
+                )}
+                {source && (
+                  <div style={styles.tooltipSection}>
+                    <strong>Source</strong>
+                    <p style={styles.tooltipText}>{source}</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <NodeDetails node={nodePopup.node} />
             )}
           </div>
         );
       })()}
+      {anchoredPopup && (
+        <div ref={anchoredRef} style={{ ...styles.anchoredPopup, left: anchoredLeft, top: anchoredPopup.top }}>
+          <div style={styles.anchoredHeader}>
+            <button style={styles.closeButton} onClick={() => setAnchoredPopup(null)}>✕</button>
+          </div>
+          <div style={styles.anchoredContent}>
+            <NodeDetails node={anchoredPopup.node} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
-

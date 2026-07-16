@@ -26,20 +26,16 @@ export const styles = {
     margin: '8px 0',
     paddingLeft: '20px',
   },
-  uri: {
-    fontSize: '12px',
-    wordBreak: 'break-all',
-    color: colors.textMuted,
-    margin: '4px 0',
-  },
   documentItem: {
-    cursor: 'default',
+    cursor: 'pointer',
   },
   documentLabel: {
     fontWeight: 'bold',
     color: colors.textSubtle,
+    textDecoration: 'underline dotted',
+    textDecorationColor: colors.textPlaceholder,
   },
-  tooltip: {
+  popup: {
     position: 'fixed',
     zIndex: 1000,
     background: '#fff',
@@ -47,7 +43,7 @@ export const styles = {
     borderRadius: '6px',
     padding: '10px 12px',
     boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
-    maxWidth: '340px',
+    width: '80ch',
     maxHeight: '260px',
     overflowY: 'auto',
     fontSize: '12px',
@@ -60,8 +56,42 @@ export const styles = {
   tooltipText: {
     margin: '2px 0 0',
     color: colors.textMuted,
-    wordBreak: 'break-word',
+    wordBreak: 'normal',
     overflowWrap: 'break-word',
+  },
+  anchoredPopup: {
+    position: 'fixed',
+    zIndex: 1001,
+    background: '#fff',
+    border: `1px solid ${colors.border}`,
+    borderRadius: '6px',
+    boxShadow: '0 4px 18px rgba(0,0,0,0.22)',
+    width: '80ch',
+    maxHeight: '420px',
+    display: 'flex',
+    flexDirection: 'column',
+    pointerEvents: 'auto',
+  },
+  anchoredHeader: {
+    flexShrink: 0,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    padding: '6px 8px 0',
+  },
+  closeButton: {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '15px',
+    color: colors.textMuted,
+    lineHeight: 1,
+    padding: '2px 4px',
+    borderRadius: '3px',
+  },
+  anchoredContent: {
+    flex: 1,
+    overflowY: 'auto',
+    padding: '0 14px 12px',
   },
 } satisfies Record<string, CSSProperties>;
 

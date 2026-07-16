@@ -1,9 +1,14 @@
 import { colors } from '../styles/theme';
 import { useGraphData } from '../context/GraphDataContext';
+import { useViewSettings } from '../context/ViewSettingsContext';
 import { getLocalName, uriToPrefixedName } from '../services/rdfParser';
+import { config } from '../config';
+
+const NEO_ID_PREDICATE = config.rdf.neo4jIdPredicateUri;
 
 export function InfoPanel() {
   const { selection, selectedNode, selectedEdge, namespaces } = useGraphData();
+  const { nodeLabelMode } = useViewSettings();
 
   if (!selection.type) {
     return (
@@ -17,7 +22,10 @@ export function InfoPanel() {
     if (!selectedNode) return null;
     return (
       <div style={styles.panel}>
-        <h3 style={styles.title}>Node: {selectedNode.label}</h3>
+        <h3 style={styles.title}>Node: {nodeLabelMode === 'neoId'
+          ? (selectedNode.metadata[NEO_ID_PREDICATE]?.[0] ?? selectedNode.label)
+          : selectedNode.label}
+        </h3>
         {selectedNode.types.length > 0 && (
           <div style={styles.section}>
             <strong>Type:</strong>

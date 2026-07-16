@@ -67,13 +67,13 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
         predicateUri: predicate,
       });
     } else {
-      // Literal object -> add to node metadata
+      // Literal object -> add to node metadata (keyed by full predicate URI)
       const nodeMeta = metadata.get(subject);
       if (nodeMeta) {
-        if (!nodeMeta[predicateLocal]) {
-          nodeMeta[predicateLocal] = [];
+        if (!nodeMeta[predicate]) {
+          nodeMeta[predicate] = [];
         }
-        nodeMeta[predicateLocal].push(objectValue);
+        nodeMeta[predicate].push(objectValue);
       }
     }
   }

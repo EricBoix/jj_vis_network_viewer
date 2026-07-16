@@ -4,7 +4,7 @@ import { Network, Options } from 'vis-network';
 import { DataSet } from 'vis-data';
 import { GraphNode, GraphEdge, Selection, NodeLabelMode } from '../types/graph.types';
 
-const NEO_ID_PREDICATE = 'id';
+const NEO_ID_PREDICATE = 'http://example.org/neo4j/id';
 
 interface UseVisNetworkProps {
   nodes: GraphNode[];

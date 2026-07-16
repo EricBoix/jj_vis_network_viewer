@@ -1,5 +1,6 @@
 import { colors } from '../styles/theme';
 import { useGraphData } from '../context/GraphDataContext';
+import { getLocalName } from '../services/rdfParser';
 
 export function InfoPanel() {
   const { selection, selectedNode, selectedEdge } = useGraphData();
@@ -31,9 +32,9 @@ export function InfoPanel() {
           <div style={styles.section}>
             <strong>Properties:</strong>
             <ul style={styles.list}>
-              {Object.entries(selectedNode.metadata).map(([key, values]) => (
-                <li key={key}>
-                  <span style={styles.key}>{key}:</span>
+              {Object.entries(selectedNode.metadata).map(([predicateUri, values]) => (
+                <li key={predicateUri}>
+                  <span style={styles.key}>{getLocalName(predicateUri)}:</span>
                   <span style={styles.value}>{values.join(', ')}</span>
                 </li>
               ))}

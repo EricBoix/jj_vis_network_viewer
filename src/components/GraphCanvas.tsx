@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
 import { useVisNetwork } from '../hooks/useVisNetwork';
+import { NodeCount } from './NodeCount';
 
 export function GraphCanvas() {
   const { nodes, edges, setSelection } = useGraphData();
@@ -62,14 +63,17 @@ export function GraphCanvas() {
   });
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100%',
-        height: '100%',
-        border: `1px solid ${colors.border}`,
-        backgroundColor: colors.backgroundCanvas,
-      }}
-    />
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div
+        ref={containerRef}
+        style={{
+          width: '100%',
+          height: '100%',
+          border: `1px solid ${colors.border}`,
+          backgroundColor: colors.backgroundCanvas,
+        }}
+      />
+      <NodeCount displayed={displayedNodes.length} total={nodes.length} />
+    </div>
   );
 }

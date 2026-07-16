@@ -13,13 +13,17 @@ export const config = {
 
   // Initial values for settings that the user can change at runtime via the UI.
   viewSettings: {
-    // Text shown (node labels) on each graph node. Possible choices: 
-    //    'name' (for rdfs:label) | 'neoId' (for Neo4j internal id).
+    // Text shown (node labels) on each graph node. Possible choices are: 
+    //   - 'name' for rdfs:label
+    //   -'neoId' for Neo4j internal id
     nodeLabelMode:        'neoId'     as const,
     physicsEnabled:       true,
     hideIsolatedNodes:    true,
     // Node types whose Overview checkbox is unchecked when a graph is first loaded.
     hiddenByDefaultTypes: ['Document'],
+    // Whether the Node types / Relationship types lists in the Overview tab
+    // start collapsed or expanded.
+    overviewListsCollapsed: true,
   },
 
   // vis-network rendering parameters.

@@ -10,11 +10,13 @@ interface ViewSettingsContextValue {
   nodeLabelMode: NodeLabelMode;
   physicsEnabled: boolean;
   hideIsolatedNodes: boolean;
+  overviewListsCollapsed: boolean;
   visibleNodeTypes: Set<string>;
   visibleEdgeTypes: Set<string>;
   setNodeLabelMode: (mode: NodeLabelMode) => void;
   setPhysicsEnabled: (enabled: boolean) => void;
   setHideIsolatedNodes: (value: boolean) => void;
+  setOverviewListsCollapsed: (value: boolean) => void;
   toggleNodeType: (type: string) => void;
   toggleEdgeType: (type: string) => void;
 }
@@ -27,6 +29,7 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
   const [nodeLabelMode, setNodeLabelMode] = useState<NodeLabelMode>(viewSettings.nodeLabelMode);
   const [physicsEnabled, setPhysicsEnabled] = useState<boolean>(viewSettings.physicsEnabled);
   const [hideIsolatedNodes, setHideIsolatedNodes] = useState<boolean>(viewSettings.hideIsolatedNodes);
+  const [overviewListsCollapsed, setOverviewListsCollapsed] = useState<boolean>(viewSettings.overviewListsCollapsed);
   const [visibleNodeTypes, setVisibleNodeTypes] = useState<Set<string>>(new Set());
   const [visibleEdgeTypes, setVisibleEdgeTypes] = useState<Set<string>>(new Set());
 
@@ -55,8 +58,10 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
 
   return (
     <ViewSettingsContext.Provider value={{
-      nodeLabelMode, physicsEnabled, hideIsolatedNodes, visibleNodeTypes, visibleEdgeTypes,
-      setNodeLabelMode, setPhysicsEnabled, setHideIsolatedNodes, toggleNodeType, toggleEdgeType,
+      nodeLabelMode, physicsEnabled, hideIsolatedNodes, overviewListsCollapsed,
+      visibleNodeTypes, visibleEdgeTypes,
+      setNodeLabelMode, setPhysicsEnabled, setHideIsolatedNodes, setOverviewListsCollapsed,
+      toggleNodeType, toggleEdgeType,
     }}>
       {children}
     </ViewSettingsContext.Provider>

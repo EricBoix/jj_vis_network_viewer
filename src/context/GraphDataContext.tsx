@@ -4,6 +4,7 @@ import { GraphNode, GraphEdge, GraphData, Selection } from '../types/graph.types
 interface GraphDataContextValue {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  namespaces: Record<string, string>;
   selection: Selection;
   selectedNode: GraphNode | undefined;
   selectedEdge: GraphEdge | undefined;
@@ -18,11 +19,13 @@ const GraphDataContext = createContext<GraphDataContextValue | null>(null);
 export function GraphDataProvider({ children }: { children: ReactNode }) {
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [edges, setEdges] = useState<GraphEdge[]>([]);
+  const [namespaces, setNamespaces] = useState<Record<string, string>>({});
   const [selection, setSelection] = useState<Selection>({ type: null, id: null });
 
   const setGraphData = useCallback((data: GraphData) => {
     setNodes(data.nodes);
     setEdges(data.edges);
+    setNamespaces(data.namespaces);
     setSelection({ type: null, id: null });
   }, []);
 
@@ -46,7 +49,7 @@ export function GraphDataProvider({ children }: { children: ReactNode }) {
 
   return (
     <GraphDataContext.Provider value={{
-      nodes, edges, selection, selectedNode, selectedEdge,
+      nodes, edges, namespaces, selection, selectedNode, selectedEdge,
       setGraphData, setSelection, updateNode, updateEdge,
     }}>
       {children}

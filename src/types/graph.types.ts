@@ -17,6 +17,7 @@ export interface GraphEdge {
 export interface GraphData {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  namespaces: Record<string, string>;
 }
 
 export type SelectionType = 'node' | 'edge' | null;

@@ -11,6 +11,7 @@ export interface RdfTriple {
 export interface ParsedRdf {
   triples: RdfTriple[];
   subjects: Set<string>;
+  namespaces: Record<string, string>;
 }
 
 function getTermValue(term: NamedNode | Literal | BlankNode): string {
@@ -33,6 +34,16 @@ function getTermType(term: NamedNode | Literal | BlankNode): 'uri' | 'literal' |
   return 'literal';
 }
 
+function extractNamespaces(turtleContent: string): Record<string, string> {
+  const namespaces: Record<string, string> = {};
+  const re = /@prefix\s+([\w-]*):\s*<([^>]+)>/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(turtleContent)) !== null) {
+    namespaces[m[1]] = m[2];
+  }
+  return namespaces;
+}
+
 export function parseRdfTurtle(turtleContent: string, baseUri: string = 'http://example.org/'): ParsedRdf {
   const store = graph();
   parse(turtleContent, store, baseUri, 'text/turtle');
@@ -53,7 +64,19 @@ export function parseRdfTurtle(turtleContent: string, baseUri: string = 'http://
     });
   });
 
-  return { triples, subjects };
+  return { triples, subjects, namespaces: extractNamespaces(turtleContent) };
+}
+
+export function uriToPrefixedName(uri: string, namespaces: Record<string, string>): string {
+  let bestPrefix = '';
+  let bestNs = '';
+  for (const [prefix, ns] of Object.entries(namespaces)) {
+    if (uri.startsWith(ns) && ns.length > bestNs.length) {
+      bestPrefix = prefix;
+      bestNs = ns;
+    }
+  }
+  return bestNs ? `${bestPrefix}:${uri.slice(bestNs.length)}` : getLocalName(uri);
 }
 
 export function getLocalName(uri: string): string {

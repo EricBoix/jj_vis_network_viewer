@@ -1,9 +1,9 @@
 import { colors } from '../styles/theme';
 import { useGraphData } from '../context/GraphDataContext';
-import { getLocalName } from '../services/rdfParser';
+import { getLocalName, uriToPrefixedName } from '../services/rdfParser';
 
 export function InfoPanel() {
-  const { selection, selectedNode, selectedEdge } = useGraphData();
+  const { selection, selectedNode, selectedEdge, namespaces } = useGraphData();
 
   if (!selection.type) {
     return (
@@ -35,7 +35,9 @@ export function InfoPanel() {
               {Object.entries(selectedNode.metadata).map(([predicateUri, values]) => (
                 <li key={predicateUri}>
                   <span style={styles.key}>{getLocalName(predicateUri)}:</span>
-                  <span style={styles.value}>{values.join(', ')}</span>
+                  <span style={styles.value}>
+                    {values.map(v => uriToPrefixedName(v, namespaces)).join(', ')}
+                  </span>
                 </li>
               ))}
             </ul>

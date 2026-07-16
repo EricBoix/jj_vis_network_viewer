@@ -83,5 +83,5 @@ export function convertRdfToGraph(parsedRdf: ParsedRdf): GraphData {
     nodes.push({ ...node, metadata: metadata.get(uri) ?? {} });
   }
 
-  return { nodes, edges };
+  return { nodes, edges, namespaces: parsedRdf.namespaces };
 }

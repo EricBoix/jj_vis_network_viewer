@@ -8,15 +8,12 @@ import { Sidebar } from './components/Sidebar';
 import { ResizeHandle } from './components/ResizeHandle';
 import { useRdfStore } from './hooks/useRdfStore';
 import { styles } from './styles/App.styles';
+import { config } from './config';
 import sampleTtl from './data/sample.ttl?raw';
-
-const SIDEBAR_MIN = 150;
-const SIDEBAR_MAX = 700;
-const SIDEBAR_DEFAULT = 300;
 
 function AppContent() {
   const { loadRdfFromString } = useRdfStore();
-  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT);
+  const [sidebarWidth, setSidebarWidth] = useState<number>(config.sidebar.defaultWidth);
 
   useEffect(() => {
     loadRdfFromString(sampleTtl);
@@ -28,7 +25,7 @@ function AppContent() {
     const startWidth = sidebarWidth;
 
     function onMouseMove(ev: MouseEvent) {
-      setSidebarWidth(Math.max(SIDEBAR_MIN, Math.min(SIDEBAR_MAX, startWidth + startX - ev.clientX)));
+      setSidebarWidth(Math.max(config.sidebar.minWidth, Math.min(config.sidebar.maxWidth, startWidth + startX - ev.clientX)));
     }
 
     function onMouseUp() {

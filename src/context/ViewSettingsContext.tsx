@@ -1,6 +1,10 @@
 import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { NodeLabelMode } from '../types/graph.types';
 import { useGraphData } from './GraphDataContext';
+import { config } from '../config';
+
+const { viewSettings } = config;
+const hiddenByDefaultSet = new Set(viewSettings.hiddenByDefaultTypes);
 
 interface ViewSettingsContextValue {
   nodeLabelMode: NodeLabelMode;
@@ -20,14 +24,16 @@ const ViewSettingsContext = createContext<ViewSettingsContextValue | null>(null)
 export function ViewSettingsProvider({ children }: { children: ReactNode }) {
   const { nodes, edges } = useGraphData();
 
-  const [nodeLabelMode, setNodeLabelMode] = useState<NodeLabelMode>('name');
-  const [physicsEnabled, setPhysicsEnabled] = useState(true);
-  const [hideIsolatedNodes, setHideIsolatedNodes] = useState(true);
+  const [nodeLabelMode, setNodeLabelMode] = useState<NodeLabelMode>(viewSettings.nodeLabelMode);
+  const [physicsEnabled, setPhysicsEnabled] = useState<boolean>(viewSettings.physicsEnabled);
+  const [hideIsolatedNodes, setHideIsolatedNodes] = useState<boolean>(viewSettings.hideIsolatedNodes);
   const [visibleNodeTypes, setVisibleNodeTypes] = useState<Set<string>>(new Set());
   const [visibleEdgeTypes, setVisibleEdgeTypes] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    setVisibleNodeTypes(new Set(nodes.flatMap(n => n.types)));
+    const allTypes = new Set(nodes.flatMap(n => n.types));
+    hiddenByDefaultSet.forEach(t => allTypes.delete(t));
+    setVisibleNodeTypes(allTypes);
     setVisibleEdgeTypes(new Set(edges.map(e => e.label)));
   }, [nodes, edges]);
 

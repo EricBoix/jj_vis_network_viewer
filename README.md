@@ -1,6 +1,13 @@
-# Knowledge Graph Visualization
+# Knowledge Graph Visualization<!-- omit from toc -->
 
 Interactive web application for visualizing RDF knowledge graphs using vis-network.
+
+## Table of contents<!-- omit from toc -->
+
+- [Features](#features)
+- [Installation](#installation)
+- [Prerequisites](#prerequisites)
+- [Visualizing the sample graph](#visualizing-the-sample-graph)
 
 ## Features
 
@@ -10,12 +17,23 @@ Interactive web application for visualizing RDF knowledge graphs using vis-netwo
 - Edit node and edge labels in-memory
 - File upload for custom RDF data
 
+## Installation
+
 ## Prerequisites
 
 - Node.js (v18+)
 - npm
 
-## Commands
+### Edit the configuration (optional)
+
+`src/config.ts` centralises all tuneable constants. Edit it before building to adjust e.g.
+
+- graph rendering parameters,
+- default view settings,
+- sidebar dimensions,
+- RDF predicate URIs.
+
+### Commands
 
 - `npm install`: install package dependencies
 - `npm run build`: compiles TypeScript and builds the production bundle to `dist/`

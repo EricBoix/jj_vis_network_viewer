@@ -4,7 +4,8 @@ import { Network, Options } from 'vis-network';
 import { DataSet } from 'vis-data';
 import { GraphNode, GraphEdge, Selection, NodeLabelMode } from '../types/graph.types';
 
-const NEO_ID_PREDICATE = 'http://example.org/neo4j/id';
+import { config } from '../config';
+const NEO_ID_PREDICATE = config.rdf.neo4jIdPredicateUri;
 
 interface UseVisNetworkProps {
   nodes: GraphNode[];
@@ -14,15 +15,17 @@ interface UseVisNetworkProps {
   onSelect: (selection: Selection) => void;
 }
 
+const { graph } = config;
+
 const networkOptions: Options = {
   nodes: {
     shape: 'dot',
-    size: 20,
+    size: graph.nodeSizePx,
     font: {
-      size: 14,
+      size: graph.nodeFontSizePx,
       color: colors.textDark,
     },
-    borderWidth: 2,
+    borderWidth: graph.nodeBorderWidthPx,
     color: {
       border: colors.primary,
       background: colors.nodeBackground,
@@ -33,13 +36,13 @@ const networkOptions: Options = {
     },
   },
   edges: {
-    width: 2,
+    width: graph.edgeWidthPx,
     color: {
       color: colors.edgeDefault,
       highlight: colors.primary,
     },
     font: {
-      size: 12,
+      size: graph.edgeFontSizePx,
       align: 'middle',
     },
     arrows: {
@@ -55,13 +58,13 @@ const networkOptions: Options = {
     enabled: true,
     solver: 'forceAtlas2Based',
     forceAtlas2Based: {
-      gravitationalConstant: -50,
-      centralGravity: 0.01,
-      springLength: 100,
-      springConstant: 0.08,
+      gravitationalConstant: graph.physics.gravitationalConstant,
+      centralGravity:        graph.physics.centralGravity,
+      springLength:          graph.physics.springLength,
+      springConstant:        graph.physics.springConstant,
     },
     stabilization: {
-      iterations: 100,
+      iterations: graph.physics.stabilizationIter,
     },
   },
   interaction: {

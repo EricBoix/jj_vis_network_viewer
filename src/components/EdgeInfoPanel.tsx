@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect } from 'react';
+import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
 import { uriToPrefixedName } from '../services/rdfParser';
@@ -9,13 +9,16 @@ import { styles } from './EdgeInfoPanel.styles';
 
 const NEO_ID_PREDICATE = config.rdf.neo4jIdPredicateUri;
 
-interface NodePopup { node: GraphNode; x: number; y: number }
+interface NodePopup    { node: GraphNode; x: number; y: number }
+interface AnchoredPopup { node: GraphNode; left: number; top: number }
 
 export function EdgeInfoPanel() {
   const { selectedEdge, namespaces, nodes } = useGraphData();
   const { nodeLabelMode } = useViewSettings();
-  const [nodePopup, setNodePopup] = useState<NodePopup | null>(null);
-  const [popupLeft, setPopupLeft] = useState(0);
+
+  const [nodePopup,     setNodePopup]     = useState<NodePopup | null>(null);
+  const [popupLeft,     setPopupLeft]     = useState(0);
+  const [anchoredPopup, setAnchoredPopup] = useState<AnchoredPopup | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -23,6 +26,16 @@ export function EdgeInfoPanel() {
     const w = popupRef.current.offsetWidth;
     setPopupLeft(Math.min(nodePopup.x + 14, window.innerWidth - w - 8));
   }, [nodePopup]);
+
+  useEffect(() => {
+    if (!anchoredPopup) return;
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setAnchoredPopup(null); };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [anchoredPopup]);
+
+  // Discard anchored popup when the selected edge changes.
+  useEffect(() => { setAnchoredPopup(null); }, [selectedEdge]);
 
   if (!selectedEdge) return null;
 
@@ -43,6 +56,10 @@ export function EdgeInfoPanel() {
       onMouseEnter: (e: React.MouseEvent) => setNodePopup({ node, x: e.clientX, y: e.clientY }),
       onMouseMove:  (e: React.MouseEvent) => setNodePopup(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null),
       onMouseLeave: () => setNodePopup(null),
+      onClick:      () => {
+        setAnchoredPopup({ node, left: popupLeft, top: (nodePopup?.y ?? 0) + 14 });
+        setNodePopup(null);
+      },
     };
   };
 
@@ -55,18 +72,27 @@ export function EdgeInfoPanel() {
       </div>
       <div style={styles.section}>
         <strong>From:</strong>{' '}
-        <span style={styles.hoverable} {...hoverProps(selectedEdge.from)}>{nodeLabel(selectedEdge.from)}</span>
+        <span style={styles.hoverable} title="Click to pin" {...hoverProps(selectedEdge.from)}>{nodeLabel(selectedEdge.from)}</span>
       </div>
       <div style={styles.section}>
         <strong>To:</strong>{' '}
-        <span style={styles.hoverable} {...hoverProps(selectedEdge.to)}>{nodeLabel(selectedEdge.to)}</span>
+        <span style={styles.hoverable} title="Click to pin" {...hoverProps(selectedEdge.to)}>{nodeLabel(selectedEdge.to)}</span>
       </div>
       {nodePopup && (
         <div ref={popupRef} style={{ ...styles.popup, left: popupLeft, top: nodePopup.y + 14 }}>
           <NodeDetails node={nodePopup.node} />
         </div>
       )}
+      {anchoredPopup && (
+        <div style={{ ...styles.anchoredPopup, left: anchoredPopup.left, top: anchoredPopup.top }}>
+          <div style={styles.anchoredHeader}>
+            <button style={styles.closeButton} onClick={() => setAnchoredPopup(null)}>✕</button>
+          </div>
+          <div style={styles.anchoredContent}>
+            <NodeDetails node={anchoredPopup.node} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
-

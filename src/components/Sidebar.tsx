@@ -1,8 +1,9 @@
 import { colors } from '../styles/theme';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { InfoPanel } from './InfoPanel';
 import { EditPanel } from './EditPanel';
 import { OverviewPanel } from './OverviewPanel';
+import { useGraphData } from '../context/GraphDataContext';
 
 interface SidebarProps {
   width: number;
@@ -10,6 +11,11 @@ interface SidebarProps {
 
 export function Sidebar({ width }: SidebarProps) {
   const [activePanel, setActivePanel] = useState<'info' | 'edit' | 'overview'>('info');
+  const { selection } = useGraphData();
+
+  useEffect(() => {
+    if (selection.type !== null) setActivePanel('info');
+  }, [selection]);
 
   return (
     <div style={{ ...styles.sidebar, width }}>

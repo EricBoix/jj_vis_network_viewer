@@ -7,7 +7,7 @@ import { NodeCount } from './NodeCount';
 
 export function GraphCanvas() {
   const { nodes, edges, setSelection } = useGraphData();
-  const { nodeLabelMode, physicsEnabled, hideIsolatedNodes, visibleNodeTypes, visibleEdgeTypes } = useViewSettings();
+  const { nodeLabelMode, physicsEnabled, hideIsolatedNodes, visibleNodeTypes, visibleEdgeTypes, highlightedNodeTypes } = useViewSettings();
 
   const visibleNodes = useMemo(
     () => nodes.filter(n => n.types.length === 0 || n.types.some(t => visibleNodeTypes.has(t))),
@@ -59,6 +59,7 @@ export function GraphCanvas() {
     edges: displayedEdges,
     nodeLabelMode,
     physicsEnabled,
+    highlightedNodeTypes,
     onSelect: setSelection,
   });
 

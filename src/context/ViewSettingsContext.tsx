@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, ReactNode } from 'react';
 import { NodeLabelMode } from '../types/graph.types';
 import { useGraphData } from './GraphDataContext';
 import { config } from '../config';
+import { nodeHighlightPalette } from '../styles/theme';
 
 const { viewSettings } = config;
 const hiddenByDefaultSet = new Set(viewSettings.hiddenByDefaultTypes);
@@ -11,12 +12,14 @@ interface ViewSettingsContextValue {
   physicsEnabled: boolean;
   hideIsolatedNodes: boolean;
   overviewListsCollapsed: boolean;
+  highlightedNodeTypes: Map<string, number>;
   visibleNodeTypes: Set<string>;
   visibleEdgeTypes: Set<string>;
   setNodeLabelMode: (mode: NodeLabelMode) => void;
   setPhysicsEnabled: (enabled: boolean) => void;
   setHideIsolatedNodes: (value: boolean) => void;
   setOverviewListsCollapsed: (value: boolean) => void;
+  toggleHighlightedNodeType: (type: string) => void;
   toggleNodeType: (type: string) => void;
   toggleEdgeType: (type: string) => void;
 }
@@ -30,6 +33,8 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
   const [physicsEnabled, setPhysicsEnabled] = useState<boolean>(viewSettings.physicsEnabled);
   const [hideIsolatedNodes, setHideIsolatedNodes] = useState<boolean>(viewSettings.hideIsolatedNodes);
   const [overviewListsCollapsed, setOverviewListsCollapsed] = useState<boolean>(viewSettings.overviewListsCollapsed);
+  const [highlightedNodeTypes, setHighlightedNodeTypes] = useState<Map<string, number>>(new Map());
+  const colorCounterRef = useRef(0);
   const [visibleNodeTypes, setVisibleNodeTypes] = useState<Set<string>>(new Set());
   const [visibleEdgeTypes, setVisibleEdgeTypes] = useState<Set<string>>(new Set());
 
@@ -38,7 +43,26 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
     hiddenByDefaultSet.forEach(t => allTypes.delete(t));
     setVisibleNodeTypes(allTypes);
     setVisibleEdgeTypes(new Set(edges.map(e => e.label)));
+    setHighlightedNodeTypes(new Map());
   }, [nodes, edges]);
+
+  const toggleHighlightedNodeType = useCallback((type: string) => {
+    setHighlightedNodeTypes(prev => {
+      const next = new Map(prev);
+      if (next.has(type)) {
+        next.delete(type);
+      } else {
+        const paletteSize = nodeHighlightPalette.length;
+        const usedIndices = new Set(next.values());
+        // Prefer an unused palette slot; fall back to round-robin when all are taken.
+        const free = Array.from({ length: paletteSize }, (_, i) => i).find(i => !usedIndices.has(i));
+        const index = free !== undefined ? free : colorCounterRef.current % paletteSize;
+        colorCounterRef.current++;
+        next.set(type, index);
+      }
+      return next;
+    });
+  }, []);
 
   const toggleNodeType = useCallback((type: string) => {
     setVisibleNodeTypes(prev => {
@@ -59,9 +83,9 @@ export function ViewSettingsProvider({ children }: { children: ReactNode }) {
   return (
     <ViewSettingsContext.Provider value={{
       nodeLabelMode, physicsEnabled, hideIsolatedNodes, overviewListsCollapsed,
-      visibleNodeTypes, visibleEdgeTypes,
+      highlightedNodeTypes, visibleNodeTypes, visibleEdgeTypes,
       setNodeLabelMode, setPhysicsEnabled, setHideIsolatedNodes, setOverviewListsCollapsed,
-      toggleNodeType, toggleEdgeType,
+      toggleHighlightedNodeType, toggleNodeType, toggleEdgeType,
     }}>
       {children}
     </ViewSettingsContext.Provider>

@@ -1,4 +1,4 @@
-import { colors } from '../styles/theme';
+import { colors, nodeHighlightPalette } from '../styles/theme';
 import { useEffect, useRef, useCallback } from 'react';
 import { Network, Options } from 'vis-network';
 import { DataSet } from 'vis-data';
@@ -12,8 +12,17 @@ interface UseVisNetworkProps {
   edges: GraphEdge[];
   nodeLabelMode: NodeLabelMode;
   physicsEnabled: boolean;
+  highlightedNodeTypes: Map<string, number>;
   onSelect: (selection: Selection) => void;
 }
+
+interface NodeColor {
+  background: string;
+  border: string;
+  highlight: { background: string; border: string };
+}
+
+type VisNode = { id: string; label: string; color?: NodeColor };
 
 const { graph } = config;
 
@@ -73,10 +82,10 @@ const networkOptions: Options = {
   },
 };
 
-export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, onSelect }: UseVisNetworkProps) {
+export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, highlightedNodeTypes, onSelect }: UseVisNetworkProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const networkRef = useRef<Network | null>(null);
-  const nodesDataSetRef = useRef<DataSet<{ id: string; label: string }>>(new DataSet());
+  const nodesDataSetRef = useRef<DataSet<VisNode>>(new DataSet());
   const edgesDataSetRef = useRef<DataSet<{ id: string; from: string; to: string; label: string }>>(new DataSet());
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
@@ -166,6 +175,31 @@ export function useVisNetwork({ nodes, edges, nodeLabelMode, physicsEnabled, onS
   useEffect(() => {
     networkRef.current?.setOptions({ physics: { enabled: physicsEnabled } });
   }, [physicsEnabled]);
+
+  // Highlight nodes belonging to the selected type; dim all others.
+  useEffect(() => {
+    const defaultColor: NodeColor = {
+      background: colors.nodeBackground,
+      border:     colors.primary,
+      highlight:  { background: colors.primaryHighlight, border: colors.primary },
+    };
+    const dimColor: NodeColor = {
+      background: colors.nodeTypeDimmed,
+      border:     colors.nodeTypeDimmedBorder,
+      highlight:  { background: colors.nodeTypeDimmed, border: colors.nodeTypeDimmedBorder },
+    };
+    const updates = nodes.map(n => {
+      if (highlightedNodeTypes.size === 0) return { id: n.id, color: defaultColor };
+      const matchIndex = n.types.reduce<number | null>((found, t) => {
+        const idx = highlightedNodeTypes.get(t);
+        return found === null && idx !== undefined ? idx : found;
+      }, null);
+      if (matchIndex === null) return { id: n.id, color: dimColor };
+      const { background, border } = nodeHighlightPalette[matchIndex % nodeHighlightPalette.length];
+      return { id: n.id, color: { background, border, highlight: { background, border } } };
+    });
+    nodesDataSetRef.current.update(updates);
+  }, [highlightedNodeTypes, nodes]);
 
   const fit = useCallback(() => {
     networkRef.current?.fit();

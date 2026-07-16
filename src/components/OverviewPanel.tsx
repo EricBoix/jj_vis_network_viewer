@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
+import { nodeHighlightPalette } from '../styles/theme';
 import { styles } from './OverviewPanel.styles';
 
 export function OverviewPanel() {
   const { nodes, edges } = useGraphData();
   const { visibleNodeTypes, visibleEdgeTypes, toggleNodeType, toggleEdgeType,
-          overviewListsCollapsed } = useViewSettings();
+          overviewListsCollapsed, highlightedNodeTypes, toggleHighlightedNodeType } = useViewSettings();
 
   const [nodeTypesOpen, setNodeTypesOpen] = useState(!overviewListsCollapsed);
   const [edgeTypesOpen, setEdgeTypesOpen] = useState(!overviewListsCollapsed);
@@ -31,15 +32,22 @@ export function OverviewPanel() {
           allNodeTypes.length === 0
             ? <p style={styles.empty}>No types found</p>
             : allNodeTypes.map(type => (
-              <label key={type} style={styles.row}>
+              <div key={type} style={styles.row}>
                 <input
                   type="checkbox"
                   checked={visibleNodeTypes.has(type)}
                   onChange={() => toggleNodeType(type)}
                   style={styles.checkbox}
                 />
-                {type}
-              </label>
+                <span
+                  style={highlightedNodeTypes.has(type)
+                    ? { ...styles.typeNameActive, color: nodeHighlightPalette[highlightedNodeTypes.get(type)! % nodeHighlightPalette.length].border }
+                    : styles.typeName}
+                  onClick={() => toggleHighlightedNodeType(type)}
+                >
+                  {type}
+                </span>
+              </div>
             ))
         )}
       </section>
@@ -52,15 +60,15 @@ export function OverviewPanel() {
           allEdgeTypes.length === 0
             ? <p style={styles.empty}>No relationships found</p>
             : allEdgeTypes.map(type => (
-              <label key={type} style={styles.row}>
+              <div key={type} style={styles.row}>
                 <input
                   type="checkbox"
                   checked={visibleEdgeTypes.has(type)}
                   onChange={() => toggleEdgeType(type)}
                   style={styles.checkbox}
                 />
-                {type}
-              </label>
+                <span style={styles.typeName}>{type}</span>
+              </div>
             ))
         )}
       </section>

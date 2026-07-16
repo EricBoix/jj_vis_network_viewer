@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { colors } from '../styles/theme';
+import { colors } from '../styles/theme'; // used for textFaint, textSubtle
 
 export const styles = {
   panel: {
@@ -48,5 +48,14 @@ export const styles = {
     color: colors.textFaint,
     fontStyle: 'italic',
     fontSize: '13px',
+  },
+  typeName: {
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
+  typeNameActive: {
+    cursor: 'pointer',
+    userSelect: 'none',
+    fontWeight: 'bold',
   },
 } satisfies Record<string, CSSProperties>;

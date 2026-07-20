@@ -41,6 +41,28 @@ Interactive web application for visualizing RDF knowledge graphs using vis-netwo
 - `npm run dev`: starts a development server at `http://localhost:5173`
 - `npm run lint`: runs ESLint on the codebase.
 
+## Running things with Docker
+
+Build the image from the `DockerContext/` directory, which holds the `Dockerfile`:
+
+```bash
+docker build -t jejuneness:kg_graph_viewer DockerContext/
+```
+
+Or build directly from GitHub without cloning (requires a public repository):
+
+```bash
+docker build -t jejuneness:kg_graph_viewer \
+  "https://github.com/EricBoix/jejune_kg-graph_viewer.git#main:DockerContext"
+```
+
+Run the container, mapping nginx port 80 to localhost:8080:
+
+```bash
+docker run --rm -p 8080:80 jejuneness:kg_graph_viewer
+open http://localhost:8080
+```
+
 ## Visualizing the sample graph
 
 ### Visualizing the default sample graph

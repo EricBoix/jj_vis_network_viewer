@@ -32,10 +32,4 @@ export const styles = {
     flex: 1,
     position: 'relative',
   },
-  physicsToggle: {
-    position: 'absolute',
-    bottom: '12px',
-    right: '12px',
-    zIndex: 10,
-  },
 } satisfies Record<string, React.CSSProperties>;

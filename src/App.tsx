@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { GraphProvider } from './context/GraphContext';
 import { GraphCanvas } from './components/GraphCanvas';
 import { LoadRdfButton } from './components/LoadRdfButton';
-import { PhysicsToggle } from './components/PhysicsToggle';
 import { SettingsMenu } from './components/SettingsMenu';
 import { Sidebar } from './components/Sidebar';
 import { ResizeHandle } from './components/ResizeHandle';
@@ -61,9 +60,6 @@ function AppContent() {
       <div style={styles.main}>
         <div style={styles.canvasContainer}>
           <GraphCanvas />
-          <div style={styles.physicsToggle}>
-            <PhysicsToggle />
-          </div>
         </div>
         <ResizeHandle onMouseDown={onHandleMouseDown} />
         <Sidebar width={sidebarWidth} />

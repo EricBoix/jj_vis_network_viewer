@@ -4,6 +4,8 @@ import { useGraphData } from '../context/GraphDataContext';
 import { useViewSettings } from '../context/ViewSettingsContext';
 import { useVisNetwork } from '../hooks/useVisNetwork';
 import { NodeCount } from './NodeCount';
+import { FitScreenButton } from './FitScreenButton';
+import { PhysicsToggle } from './PhysicsToggle';
 
 export function GraphCanvas() {
   const { nodes, edges, setSelection } = useGraphData();
@@ -54,7 +56,7 @@ export function GraphCanvas() {
     [visibleEdges, displayedNodeIds]
   );
 
-  const { containerRef } = useVisNetwork({
+  const { containerRef, fit } = useVisNetwork({
     nodes: displayedNodes,
     edges: displayedEdges,
     nodeLabelMode,
@@ -70,11 +72,14 @@ export function GraphCanvas() {
         style={{
           width: '100%',
           height: '100%',
-          border: `1px solid ${colors.border}`,
           backgroundColor: colors.backgroundCanvas,
         }}
       />
       <NodeCount displayed={displayedNodes.length} total={nodes.length} />
+      <div style={{ position: 'absolute', bottom: '12px', right: '12px', zIndex: 10, display: 'flex', gap: '8px' }}>
+        <FitScreenButton onFit={fit} />
+        <PhysicsToggle />
+      </div>
     </div>
   );
 }

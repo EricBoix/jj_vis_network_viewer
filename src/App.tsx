@@ -16,7 +16,19 @@ function AppContent() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(config.sidebar.defaultWidth);
 
   useEffect(() => {
-    loadRdfFromString(sampleTtl);
+    const params = new URLSearchParams(window.location.search);
+    const file = params.get('file');
+    if (file) {
+      fetch(`/data/${file}`)
+        .then(r => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.text();
+        })
+        .then(content => loadRdfFromString(content))
+        .catch(() => loadRdfFromString(sampleTtl));
+    } else {
+      loadRdfFromString(sampleTtl);
+    }
   }, [loadRdfFromString]);
 
   function onHandleMouseDown(e: React.MouseEvent) {
